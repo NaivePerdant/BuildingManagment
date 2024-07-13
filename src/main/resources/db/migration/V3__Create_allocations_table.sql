@@ -4,6 +4,6 @@ CREATE TABLE allocations (
                              room_id INT,
                              allocated_to VARCHAR(255),
                              allocation_time DATETIME,
-                             status ENUM('allocated', 'deallocated'),
+                             status TINYINT,
                              notes TEXT
 );

@@ -28,7 +28,7 @@
         </javaClientGenerator>
         <table tableName="buildings" domainObjectName="Building"/>
         <table tableName="rooms" domainObjectName="Room"/>
-        <table tableName="allocations" domainObjectName="Allocations"/>
+        <table tableName="allocations" domainObjectName="Allocation"/>
         <table tableName="allocation_history" domainObjectName="AllocationHistory"/>
     </context>
 </generatorConfiguration>
