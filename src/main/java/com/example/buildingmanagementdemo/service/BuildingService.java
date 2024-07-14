@@ -52,13 +52,8 @@ public class BuildingService {
 
     private boolean isBuildingNameExistWithId(String name, int id) {
         BuildingExample buildingExample = new BuildingExample();
-        buildingExample.createCriteria().andNameEqualTo(name);
-        List<Building> buildings = buildingMapper.selectByExample(buildingExample);
-        if (!buildings.isEmpty()) {
-            // 当前要修改名字的记录在数据库中已经存在
-            return buildings.get(0).getId() != id;
-        }
-        return false;
+        buildingExample.createCriteria().andNameEqualTo(name).andIdNotEqualTo(id);
+        return !buildingMapper.selectByExample(buildingExample).isEmpty();
     }
 
     private boolean isBuildingLocationExist(String location) {
@@ -75,13 +70,8 @@ public class BuildingService {
 
     private boolean isBuildingPropertyCertNoExistWithId(String name, int id) {
         BuildingExample buildingExample = new BuildingExample();
-        buildingExample.createCriteria().andPropertyCertNoEqualTo(name);
-        List<Building> buildings = buildingMapper.selectByExample(buildingExample);
-        if (!buildings.isEmpty()) {
-            // 当前要修改房产证号的记录在数据库中已经存在
-            return buildings.get(0).getId() != id;
-        }
-        return false;
+        buildingExample.createCriteria().andPropertyCertNoEqualTo(name).andIdNotEqualTo(id);
+        return !buildingMapper.selectByExample(buildingExample).isEmpty();
     }
 
     public int removeBuilding(int id) {

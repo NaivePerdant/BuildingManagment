@@ -1,6 +1,7 @@
 package com.example.buildingmanagementdemo.controller;
 
 import com.example.buildingmanagementdemo.model.Room;
+import com.example.buildingmanagementdemo.service.BuildingService;
 import com.example.buildingmanagementdemo.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,8 @@ public class RoomController {
 
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private BuildingService buildingService;
 
     /**
      * 根据楼宇ID查询楼宇内的所有房间信息
@@ -23,7 +26,7 @@ public class RoomController {
     @GetMapping("/room/list")
     public String roomListByBuildingId(@RequestParam(name = "buildingId") int buildingId,
                                        Model model){
-        model.addAttribute("roomList", roomService.getRoomListByBuildingId(buildingId));
+        model.addAttribute("result", roomService.getRoomListByBuildingId(buildingId));
         return "test";
     }
 
@@ -36,7 +39,7 @@ public class RoomController {
     @GetMapping("/room/select")
     public String roomById(@RequestParam(name = "roomId") int roomId,
                            Model model){
-        model.addAttribute("roomList", roomService.getRoomById(roomId));
+        model.addAttribute("result", roomService.getRoomById(roomId));
         return "test";
     }
 
@@ -72,7 +75,7 @@ public class RoomController {
         room.setBedCount(bedCount);
         room.setThumbnail(thumbnail);
         room.setNotes(notes);
-        model.addAttribute("room", roomService.addRoom(room));
+        model.addAttribute("result", roomService.addRoom(room));
         return "test";
     }
 

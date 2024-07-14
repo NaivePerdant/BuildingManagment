@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class AllocationController {
-    Byte allocated = 0;
-    Byte unallocated = 1;
 
     @Autowired
     AllocationService allocationService;
@@ -24,32 +22,31 @@ public class AllocationController {
      * @return
      */
     @PostMapping("/allocation/add")
-    public String addAllocation(@RequestParam(name = "roomId") Integer roomId,
-                                @RequestParam(name = "userId") String allocatedTo) {
+    public String addAllocation(@RequestParam(name = "roomId") int roomId,
+                                @RequestParam(name = "userId") String allocatedTo,
+                                Model model) {
         Allocation allocation = new Allocation();
         allocation.setRoomId(roomId);
         allocation.setAllocatedTo(allocatedTo);
         allocation.setAllocationTime(System.currentTimeMillis());
-        allocation.setStatus(allocated);
-        allocationService.insertAllocation(allocation);
+        model.addAttribute("result", allocationService.insertAllocation(allocation));
         return "test";
     }
 
     /**
      * 更新房间的分配记录
      *
-     * @param roomId      房间id
      * @param allocatedTo 分配用户id
      * @return
      */
     @PutMapping("/allocation/update")
-    public String updateAllocation(@RequestParam(name = "roomId") Integer roomId,
-                                   @RequestParam(name = "userId") String allocatedTo) {
+    public String updateAllocation(@RequestParam(name = "id") int id,
+                                   @RequestParam(name = "userId") String allocatedTo,
+                                   Model model) {
         Allocation allocation = new Allocation();
+        allocation.setId(id);
         allocation.setAllocatedTo(allocatedTo);
-        AllocationExample allocationExample = new AllocationExample();
-        allocationExample.createCriteria().andRoomIdEqualTo(roomId).andStatusEqualTo(allocated);
-        allocationService.updateAllocation(allocation, allocationExample);
+        model.addAttribute("result", allocationService.updateAllocation(allocation));
         return "test";
     }
 
@@ -60,7 +57,8 @@ public class AllocationController {
      * @return
      */
     @DeleteMapping("/allocation/remove")
-    public String removeAllocation(@RequestParam(name = "id") int id) {
+    public String removeAllocation(@RequestParam(name = "id") int id,
+                                   Model model) {
         allocationService.removeAllocationById(id);
         return "test";
     }
@@ -75,7 +73,7 @@ public class AllocationController {
     @GetMapping("/allocation/list")
     public String allocationList(@RequestParam(name = "roomId") int roomId,
                                  Model model) {
-        model.addAttribute("allocation", allocationService.getAllocationById(roomId));
+        model.addAttribute("result", allocationService.getAllocationByRoomId(roomId));
         return "test";
     }
 
@@ -90,7 +88,7 @@ public class AllocationController {
     @GetMapping("/allocation/history")
     public String allocationHistoryList(@RequestParam(name = "roomId") int roomId,
                                         Model model) {
-        model.addAttribute("allocationHistory", allocationService.getAllocationHistoryById(roomId));
+        model.addAttribute("result", allocationService.getAllocationHistoryByRoomId(roomId));
         return "test";
     }
 
