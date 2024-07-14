@@ -1,11 +1,8 @@
 package com.example.buildingmanagementdemo.controller;
 
-import com.example.buildingmanagementdemo.mapper.AllocationHistoryMapper;
-import com.example.buildingmanagementdemo.mapper.AllocationMapper;
 import com.example.buildingmanagementdemo.model.Allocation;
 import com.example.buildingmanagementdemo.model.AllocationExample;
-import com.example.buildingmanagementdemo.model.AllocationHistory;
-import com.example.buildingmanagementdemo.model.AllocationHistoryExample;
+import com.example.buildingmanagementdemo.service.AllocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,23 +19,32 @@ public class AllocationController {
     Byte unallocated = 1;
 
     @Autowired
-    private AllocationMapper allocationMapper;
+    AllocationService allocationService;
 
-    @Autowired
-    private AllocationHistoryMapper allocationHistoryMapper;
-
+    /**
+     * 添加房间的分配记录
+     * @param roomId 房间id
+     * @param allocatedTo 分配用户id
+     * @return
+     */
     @PostMapping("/allocation/add")
     public String addAllocation(@RequestParam(name = "roomId") Integer roomId,
                                 @RequestParam(name = "userId") String allocatedTo) {
         Allocation allocation = new Allocation();
         allocation.setRoomId(roomId);
         allocation.setAllocatedTo(allocatedTo);
-        allocation.setAllocationTime(new Date());
+        allocation.setAllocationTime(System.currentTimeMillis());
         allocation.setStatus(allocated);
-        allocationMapper.insert(allocation);
+        allocationService.insertAllocation(allocation);
         return "test";
     }
 
+    /**
+     * 更新房间的分配记录
+     * @param roomId 房间id
+     * @param allocatedTo 分配用户id
+     * @return
+     */
     @PostMapping("/allocation/update")
     public String updateAllocation(@RequestParam(name = "roomId") Integer roomId,
             @RequestParam(name = "userId") String allocatedTo) {
@@ -46,40 +52,45 @@ public class AllocationController {
         allocation.setAllocatedTo(allocatedTo);
         AllocationExample allocationExample = new AllocationExample();
         allocationExample.createCriteria().andRoomIdEqualTo(roomId).andStatusEqualTo(allocated);
-        allocationMapper.updateByExampleSelective(allocation, allocationExample);
+        allocationService.updateAllocation(allocation, allocationExample);
         return "test";
     }
 
+    /**
+     * 解除房间的分配
+     * @param id
+     * @return
+     */
     @PostMapping("/allocation/remove")
     public String removeAllocation(@RequestParam(name = "id") int id) {
-        Allocation allocation = allocationMapper.selectByPrimaryKey(id);
-        allocationMapper.deleteByPrimaryKey(id);
-        AllocationHistory allocationHistory = new AllocationHistory();
-        allocationHistory.setRoomId(allocation.getRoomId());
-        allocationHistory.setAllocatedTo(allocation.getAllocatedTo());
-        allocationHistory.setAllocationTime(allocation.getAllocationTime());
-        allocationHistory.setDeallocationTime(new Date());
-        allocationHistoryMapper.insert(allocationHistory);
+        allocationService.removeAllocationById(id);
         return "test";
     }
 
+    /**
+     * 查询房间的分配记录
+     * @param roomId
+     * @param model
+     * @return
+     */
     @RequestMapping("/allocation/list")
     public String allocationList(@RequestParam(name = "roomId") int roomId,
                                  Model model) {
-        AllocationExample allocationExample = new AllocationExample();
-        allocationExample.createCriteria().andRoomIdEqualTo(roomId);
-        List<Allocation> allocations = allocationMapper.selectByExample(allocationExample);
-        model.addAttribute("allocation", allocations);
+        model.addAttribute("allocation", allocationService.getAllocationById(roomId));
         return "test";
     }
 
+
+    /**
+     * 查询房间的历史分配记录
+     * @param roomId
+     * @param model
+     * @return
+     */
     @RequestMapping("/allocation/history")
     public String allocationHistoryList(@RequestParam(name = "roomId") int roomId,
                                         Model model) {
-        AllocationHistoryExample allocationHistoryExample = new AllocationHistoryExample();
-        allocationHistoryExample.createCriteria().andRoomIdEqualTo(roomId);
-        List<AllocationHistory> allocationHistories = allocationHistoryMapper.selectByExample(allocationHistoryExample);
-        model.addAttribute("allocationHistory", allocationHistories);
+        model.addAttribute("allocationHistory", allocationService.getAllocationHistoryById(roomId));
         return "test";
     }
 

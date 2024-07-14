@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.buildingmanagementdemo.mapper.BuildingExtMapper">
+    <resultMap id="BaseResultMap" type="com.example.buildingmanagementdemo.model.Building" extends="com.example.buildingmanagementdemo.mapper.BuildingMapper.BaseResultMap">
+    </resultMap>
+    <!-- 模糊全搜 -->
+    <select id="fullSelectByKeyword" resultMap="BaseResultMap">
+        SELECT * FROM buildings
+        WHERE name LIKE CONCAT('%', #{keyword, jdbcType=VARCHAR}, '%')
+        OR property_cert_no LIKE CONCAT('%', #{keyword, jdbcType=VARCHAR}, '%');
+    </select>
+</mapper>

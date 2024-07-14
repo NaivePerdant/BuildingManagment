@@ -11,8 +11,8 @@ CREATE TABLE buildings (
                            floors_above_ground INT,
                            floors_below_ground INT,
                            location VARCHAR(255),
-                           build_year YEAR,
-                           register_time DATETIME,
+                           build_year SMALLINT,
+                           register_time BIGINT,
                            department VARCHAR(255),
                            purpose VARCHAR(255)
 );
