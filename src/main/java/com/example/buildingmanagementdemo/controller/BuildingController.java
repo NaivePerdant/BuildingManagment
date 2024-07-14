@@ -5,12 +5,9 @@ import com.example.buildingmanagementdemo.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Controller
 public class BuildingController {
@@ -21,14 +18,40 @@ public class BuildingController {
 
     /**
      * 根据关键词搜索楼宇信息
-     * @param key 搜索关键词，可以是楼宇名字也可以是楼宇房产证号
+     *
+     * @param key   搜索关键词，可以是楼宇名字也可以是楼宇房产证号
      * @param model 用于返回数据
-     * @return  路由地址
+     * @return 路由地址
      */
     @GetMapping("/building/search")
-    public String search(@RequestParam(value = "key") String key,
-            Model model) {
+    public String search(@RequestParam(value = "keyWords") String key,
+                         Model model) {
         model.addAttribute("result", buildingService.search(key));
+        return "test";
+    }
+
+    /**
+     * 获取所有楼宇信息
+     *
+     * @param model 用于返回数据
+     * @return 路由地址
+     */
+    @GetMapping("/building/list")
+    public String getAllBuildings(Model model) {
+        model.addAttribute("result", buildingService.selectAllBuildings());
+        return "test";
+    }
+
+    /**
+     * 根据楼宇ID查询楼宇信息
+     * @param buildingId
+     * @param model
+     * @return
+     */
+    @GetMapping("/building/select")
+    public String getBuilding(@RequestParam(name = "buildingId") int buildingId,
+                              Model model) {
+        model.addAttribute("result", buildingService.selectBuildingById(buildingId));
         return "test";
     }
 
@@ -83,21 +106,9 @@ public class BuildingController {
     }
 
     /**
-     * 获取所有楼宇信息
-     *
-     * @param model 用于返回数据
-     * @return 路由地址
-     */
-    @GetMapping("/building/list")
-    public String getAllBuildings(Model model) {
-        model.addAttribute("result", buildingService.selectAllBuildings());
-        return "test";
-    }
-
-    /**
      * 更新楼宇信息
      *
-     * @param id                楼宇id
+     * @param buildingId                楼宇id
      * @param name              楼宇名称
      * @param campus            所在校区
      * @param roomCount         房间数量
@@ -113,8 +124,8 @@ public class BuildingController {
      * @param model             用于返回数据
      * @return 路由地址
      */
-    @PostMapping("/building/update")
-    public String updateBuilding(@RequestParam(name = "id") int id,
+    @PutMapping("/building/update")
+    public String updateBuilding(@RequestParam(name = "buildingId") int buildingId,
                                  @RequestParam(name = "name") String name,
                                  @RequestParam(name = "campus") String campus,
                                  @RequestParam(name = "roomCount") int roomCount,
@@ -128,8 +139,11 @@ public class BuildingController {
                                  @RequestParam(name = "department") String department,
                                  @RequestParam(name = "purpose") String purpose,
                                  Model model) {
-        Building building = new Building();
-        building.setId(id);
+        Building building = buildingService.selectBuildingById(buildingId);
+        if(building == null) {
+            model.addAttribute("result", "更新的楼宇信息不存在");
+            return "test";
+        }
         building.setName(name);
         building.setCampus(campus);
         building.setPropertyCertNo(propertyCertNo);
@@ -151,12 +165,12 @@ public class BuildingController {
     /**
      * 删除楼宇信息
      *
-     * @param id 楼宇id
+     * @param buildingId 楼宇id
      * @return 路由地址
      */
-    @PostMapping("/building/remove")
-    public String removeBuilding(@RequestParam(name = "id") int id, Model model) {
-        model.addAttribute("result", buildingService.removeBuilding(id));
+    @DeleteMapping("/building/remove")
+    public String removeBuilding(@RequestParam(name = "buildingId") int buildingId, Model model) {
+        model.addAttribute("result", buildingService.removeBuilding(buildingId));
         return "test";
     }
 

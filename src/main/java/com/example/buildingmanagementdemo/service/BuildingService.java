@@ -41,7 +41,7 @@ public class BuildingService {
             return ERROR_CODE_BUILDING_PROPERTY_CERT_NO_EXIST;
         }
 
-        return buildingMapper.insert(building);
+        return buildingMapper.insertSelective(building);
     }
 
     private boolean isBuildingNameExist(String name) {
