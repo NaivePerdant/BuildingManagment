@@ -1,3 +1,6 @@
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS building_management DEFAULT CHARACTER SET UTF8;
+-- 切换数据库
 USE building_management;
 -- 创建楼宇信息表 (buildings)
 CREATE TABLE buildings (

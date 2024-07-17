@@ -1,95 +1,50 @@
 package com.example.buildingmanagementdemo.controller;
 
+import com.example.buildingmanagementdemo.dto.Result;
 import com.example.buildingmanagementdemo.model.Allocation;
-import com.example.buildingmanagementdemo.model.AllocationExample;
 import com.example.buildingmanagementdemo.service.AllocationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import javax.annotation.Resource;
+
+@CrossOrigin
+@RestController
+@RequestMapping("/allocation")
 public class AllocationController {
 
-    @Autowired
+    @Resource
     AllocationService allocationService;
 
-    /**
-     * 添加房间的分配记录
-     *
-     * @param roomId      房间id
-     * @param allocatedTo 分配用户id
-     * @return
-     */
-    @PostMapping("/allocation/add")
-    public String addAllocation(@RequestParam(name = "roomId") int roomId,
-                                @RequestParam(name = "userId") String allocatedTo,
-                                Model model) {
-        Allocation allocation = new Allocation();
-        allocation.setRoomId(roomId);
-        allocation.setAllocatedTo(allocatedTo);
-        allocation.setAllocationTime(System.currentTimeMillis());
-        model.addAttribute("result", allocationService.insertAllocation(allocation));
-        return "test";
+    @Operation(summary = "添加房间的分配记录")
+    @PostMapping("/add")
+    public Result addAllocation(@RequestBody Allocation allocation) {
+        return Result.success(allocationService.insertAllocation(allocation));
     }
 
-    /**
-     * 更新房间的分配记录
-     *
-     * @param allocatedTo 分配用户id
-     * @return
-     */
-    @PutMapping("/allocation/update")
-    public String updateAllocation(@RequestParam(name = "id") int id,
-                                   @RequestParam(name = "userId") String allocatedTo,
-                                   Model model) {
-        Allocation allocation = new Allocation();
-        allocation.setId(id);
-        allocation.setAllocatedTo(allocatedTo);
-        model.addAttribute("result", allocationService.updateAllocation(allocation));
-        return "test";
+    @Operation(summary = "更新房间的分配记录")
+    @PutMapping("/update")
+    public Result updateAllocation(@RequestBody Allocation allocation) {
+        return Result.success(allocationService.updateAllocation(allocation));
     }
 
-    /**
-     * 解除房间的分配
-     *
-     * @param id
-     * @return
-     */
-    @DeleteMapping("/allocation/remove")
-    public String removeAllocation(@RequestParam(name = "id") int id,
-                                   Model model) {
-        allocationService.removeAllocationById(id);
-        return "test";
+    @Operation(summary = "解除房间的分配")
+    @DeleteMapping("/remove")
+    public Result removeAllocation(@RequestBody Allocation allocation) {
+        allocationService.removeAllocationById(allocation.getId());
+        return Result.success();
     }
 
-    /**
-     * 查询房间的分配记录
-     *
-     * @param roomId
-     * @param model
-     * @return
-     */
-    @GetMapping("/allocation/list")
-    public String allocationList(@RequestParam(name = "roomId") int roomId,
-                                 Model model) {
-        model.addAttribute("result", allocationService.getAllocationByRoomId(roomId));
-        return "test";
+    @Operation(summary = "查询房间的分配记录")
+    @GetMapping("/list")
+    public Result allocationList(@RequestParam int roomId) {
+        return Result.success(allocationService.getAllocationByRoomId(roomId));
     }
 
-
-    /**
-     * 查询房间的历史分配记录
-     *
-     * @param roomId
-     * @param model
-     * @return
-     */
-    @GetMapping("/allocation/history")
-    public String allocationHistoryList(@RequestParam(name = "roomId") int roomId,
-                                        Model model) {
-        model.addAttribute("result", allocationService.getAllocationHistoryByRoomId(roomId));
-        return "test";
+    @Operation(summary = "查询房间的历史分配记录")
+    @GetMapping("/history")
+    public Result allocationHistoryList(@RequestParam int roomId) {
+        return Result.success(allocationService.getAllocationHistoryByRoomId(roomId));
     }
 
 
