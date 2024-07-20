@@ -1,7 +1,7 @@
 package com.example.buildingmanagementdemo.controller;
 
 import com.example.buildingmanagementdemo.model.Room;
-import com.example.buildingmanagementdemo.service.BuildingService;
+import com.example.buildingmanagementdemo.service.impl.BuildingServiceImpl;
 import com.example.buildingmanagementdemo.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +16,7 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
     @Autowired
-    private BuildingService buildingService;
+    private BuildingServiceImpl buildingService;
 
     /**
      * 根据楼宇ID查询楼宇内的所有房间信息

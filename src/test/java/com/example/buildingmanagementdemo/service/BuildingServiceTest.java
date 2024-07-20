@@ -1,6 +1,7 @@
 package com.example.buildingmanagementdemo.service;
 
 import com.example.buildingmanagementdemo.model.Building;
+import com.example.buildingmanagementdemo.service.impl.BuildingServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BuildingServiceTest {
 
     @Resource
-    private BuildingService buildingService;
+    private BuildingServiceImpl buildingService;
 
     @Test
     void insertBuilding() {

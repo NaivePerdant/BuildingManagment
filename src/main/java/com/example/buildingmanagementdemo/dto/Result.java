@@ -30,4 +30,11 @@ public class Result {
     public static Result success() {
         return success(null);
     }
+
+    public static Result error(String msg) {
+        Result result = new Result();
+        result.setCode(500);
+        result.setData(msg);
+        return result;
+    }
 }
